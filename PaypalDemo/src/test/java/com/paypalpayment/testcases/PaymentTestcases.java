@@ -2,9 +2,12 @@ package com.paypalpayment.testcases;
 
 import com.paypalpayment.base.TestBase;
 import com.paypalpayment.utils.TestData;
-import io.restassured.http.ContentType;
+import com.paypalpayment.utils.RestClient;
 
-import static io.restassured.RestAssured.given;
+//import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+
+//import static io.restassured.RestAssured.given;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -12,20 +15,16 @@ import org.testng.annotations.Test;
 
 public class PaymentTestcases extends TestBase {
 	static String payment_id;
+	public static Response response;
+	RestClient restClient = new RestClient();
 	TestData td=new TestData();
 	public String[][]XData;
 	@Test
 	public void createAPayment() throws Exception{
 		XData=td.readXL("Payment");
-		System.out.println("Body"+td.fieldValue(XData, "CreatePayment", "Path"));
-		
-		payment_id=given()
-		.contentType(ContentType.JSON)
-		.auth()
-		.oauth2(accessToken)
-		.when()
-		.body(td.fieldValue(XData, "CreatePayment", "Body"))
-		.post(td.fieldValue(XData, "CreatePayment", "Path"))
+		//System.out.println("Body"+td.fieldValue(XData, "CreatePayment", "Path"));
+		response=restClient.doPostRequest(td.fieldValue(XData, "CreatePayment", "Path"), td.fieldValue(XData, "CreatePayment", "Body"));
+		payment_id=response
 		.then()
 		.log()
 		.all()
@@ -37,15 +36,12 @@ public class PaymentTestcases extends TestBase {
 		}
 	@Test
 	public void getPaymentDetails(){
-		given()
-		.auth()
-		.oauth2(accessToken)
-		.when()
-		.get(td.fieldValue(XData, "GetPaymentDetails", "Path")+payment_id)
+		response=restClient.doGetRequest(td.fieldValue(XData, "GetPaymentDetails", "Path")+payment_id);
+		response
 		.then()
 		.assertThat()
 		.statusCode(Integer.parseInt(td.fieldValue(XData, "GetPaymentDetails", "ExpectedResult")));
-	
+		
 	}
 
 }

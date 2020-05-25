@@ -10,11 +10,13 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.paypalpayment.base.TestBase;
 
 
 
 
-public class TestData {
+
+public class TestData extends TestBase{
 	private static XSSFWorkbook ExcelWBook;
 	private static XSSFSheet ExcelWSheet;
 	//public static String[][] xData;
@@ -30,7 +32,7 @@ public class TestData {
         //File myFile = new File(sPath);  //Pass this file path to myFile
         FileInputStream myStream = new FileInputStream(System.getProperty("user.dir") 
 				+ File.separator + "src/test/resources"
-				+ File.separator + "Paypal_Data.xlsx");
+				+ File.separator + prop.getProperty("testdatafilename"));
        
         ExcelWBook  = new XSSFWorkbook(myStream); //Declare work book and pass myStream in it
         ExcelWSheet = ExcelWBook.getSheet(sheetname); //Go to the sheet at index 0 i.e. First One
